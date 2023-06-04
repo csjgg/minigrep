@@ -25,7 +25,10 @@ impl Config {
 pub fn search(args: Config) -> () {
     println!("Search for '{}'", args.query);
     let contents = match args.filename {
-        Some(t) => fs::read_to_string(&t).expect("Something went wrong reading the file"),
+        Some(t) => fs::read_to_string(&t).unwrap_or_else(|_| {
+            println!("Something went wrong in reading the file");
+            process::exit(-1);
+        }),
         None => read_from_commend().unwrap_or_else(|err| {
             println!("{}", err);
             process::exit(-1);
